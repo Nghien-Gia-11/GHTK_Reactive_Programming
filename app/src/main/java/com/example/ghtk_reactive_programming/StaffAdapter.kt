@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ghtk_reactive_programming.databinding.LayoutItemStaffBinding
 
-class StaffAdapter(private var listStaff : MutableList<Staff>) : RecyclerView.Adapter<StaffAdapter.ViewHolder>() {
+class StaffAdapter(private var listStaff : MutableList<Staff>, private val onClick : OnClick) : RecyclerView.Adapter<StaffAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding : LayoutItemStaffBinding) : RecyclerView.ViewHolder(binding.root){
 
@@ -24,6 +24,9 @@ class StaffAdapter(private var listStaff : MutableList<Staff>) : RecyclerView.Ad
         holder.binding.tvName.text = listStaff[position].name
         holder.binding.tvAddress.text = listStaff[position].address
         holder.binding.tvYearOfBirth.text = listStaff[position].yearOfBirth.toString()
+        holder.binding.btnDelete.setOnClickListener {
+            onClick.onClick(position)
+        }
     }
 
 

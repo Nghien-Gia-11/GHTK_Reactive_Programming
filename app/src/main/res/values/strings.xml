@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GHTK_Reactive_Programming</string>
+    <string name="todo">TODO</string>
 </resources>

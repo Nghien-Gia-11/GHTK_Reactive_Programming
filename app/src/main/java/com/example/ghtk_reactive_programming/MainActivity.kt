@@ -75,7 +75,6 @@ class MainActivity : AppCompatActivity(), OnClick {
                 bindingDiaLog.edtYearOfBirth.text.toString()
             )
             diaLog.dismiss()
-            initData()
         }
 
         lifecycleScope.launch {
@@ -116,7 +115,7 @@ class MainActivity : AppCompatActivity(), OnClick {
 
     private fun initDataForSpinner() {
         lifecycleScope.launch {
-            viewModel.listStaff.collect {
+            viewModel.listStaff.observe(this@MainActivity) {
                 spinnerYearOfBirth.setData(it.map { staff -> staff.yearOfBirth.toString() }
                     .distinct())
                 spinnerAddress.setData(it.map { staff -> staff.address }.distinct())
@@ -126,7 +125,7 @@ class MainActivity : AppCompatActivity(), OnClick {
 
     private fun initDataSearch() {
         lifecycleScope.launch {
-            viewModel.staffSearch.collect {
+            viewModel.staffSearch.observe(this@MainActivity) {
                 staffAdapter.setData(it)
             }
         }
@@ -134,7 +133,7 @@ class MainActivity : AppCompatActivity(), OnClick {
 
     private fun initData() {
         lifecycleScope.launch {
-            viewModel.listStaff.collect {
+            viewModel.listStaff.observe(this@MainActivity)  {
                 staffAdapter.setData(it)
             }
         }
@@ -216,7 +215,6 @@ class MainActivity : AppCompatActivity(), OnClick {
                 showState(it)
             }
         }
-        initData()
     }
 
     private fun showState(state: String) {

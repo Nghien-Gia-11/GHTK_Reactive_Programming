@@ -1,6 +1,7 @@
 package com.example.ghtk_reactive_programming
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,11 +15,11 @@ class StaffViewModel : ViewModel() {
         const val FAILED = "Failed"
     }
 
-    private var _listStaff = MutableStateFlow(mutableListOf<Staff>())
-    val listStaff : StateFlow<MutableList<Staff>> = _listStaff
+    private var _listStaff = MutableLiveData(mutableListOf<Staff>())
+    val listStaff : LiveData<MutableList<Staff>> = _listStaff
 
-    private var _staffSearch = MutableStateFlow(mutableListOf<Staff>())
-    val staffSearch : StateFlow<MutableList<Staff>> = _staffSearch
+    private var _staffSearch = MutableLiveData(mutableListOf<Staff>())
+    val staffSearch : LiveData<MutableList<Staff>> = _staffSearch
 
     private var _nameSearch = MutableStateFlow("")
 
@@ -58,11 +59,11 @@ class StaffViewModel : ViewModel() {
         val listStaff = if (yearOfBirth == null && address == null) {
             _listStaff.value
         } else if (yearOfBirth == null){
-            _listStaff.value.filter { staff -> staff.address == address }.toMutableList()
+            _listStaff.value?.filter { staff -> staff.address == address }?.toMutableList()
         } else if (address == null){
-            _listStaff.value.filter { staff -> staff.yearOfBirth == yearOfBirth }.toMutableList()
+            _listStaff.value?.filter { staff -> staff.yearOfBirth == yearOfBirth }?.toMutableList()
         } else {
-            _listStaff.value.filter { staff -> staff.yearOfBirth == yearOfBirth && staff.address == address}.toMutableList()
+            _listStaff.value?.filter { staff -> staff.yearOfBirth == yearOfBirth && staff.address == address}?.toMutableList()
         }
         _staffSearch.value = listStaff
     }
@@ -78,7 +79,7 @@ class StaffViewModel : ViewModel() {
 
     private fun searchByEditText() {
         val listStaff = if (_nameSearch.value.isNotEmpty()) {
-            _listStaff.value.filter { staff -> staff.name == _nameSearch.value }.toMutableList()
+            _listStaff.value?.filter { staff -> staff.name == _nameSearch.value }?.toMutableList()
         } else {
             _listStaff.value
         }
@@ -90,7 +91,7 @@ class StaffViewModel : ViewModel() {
     fun deleteStaff(pos: Int) {
         _deleteStaffState.value = LOADING
         val listStaff = _listStaff.value
-        listStaff.removeAt(pos)
+        listStaff?.removeAt(pos)
         _listStaff.value = listStaff
         _deleteStaffState.value = SUCCESS
     }
@@ -102,7 +103,7 @@ class StaffViewModel : ViewModel() {
             _addStaffState.value = FAILED
         } else{
             val staff = Staff(name, address, yearOfBirth.toInt())
-            listStaff.add(staff)
+            listStaff?.add(staff)
             _listStaff.value = listStaff
             _addStaffState.value = SUCCESS
         }

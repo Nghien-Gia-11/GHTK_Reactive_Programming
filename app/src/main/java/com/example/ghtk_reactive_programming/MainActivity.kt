@@ -3,6 +3,7 @@ package com.example.ghtk_reactive_programming
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.ghtk_reactive_programming.databinding.ActivityMainBinding
 import com.example.ghtk_reactive_programming.databinding.LayoutDialogAddStaffBinding
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), OnClick {
@@ -80,6 +82,9 @@ class MainActivity : AppCompatActivity(), OnClick {
         lifecycleScope.launch {
             viewModel.addStaffState.collect {
                 showState(it)
+                if (it == StaffViewModel.FAILED){
+                    diaLog.dismiss()
+                }
             }
         }
 
@@ -109,13 +114,12 @@ class MainActivity : AppCompatActivity(), OnClick {
                     initDataSearch()
                 }
             }
-
         })
     }
 
     private fun initDataForSpinner() {
         lifecycleScope.launch {
-            viewModel.listStaff.observe(this@MainActivity) {
+            viewModel.listStaff.collect {
                 spinnerYearOfBirth.setData(it.map { staff -> staff.yearOfBirth.toString() }
                     .distinct())
                 spinnerAddress.setData(it.map { staff -> staff.address }.distinct())
@@ -125,7 +129,7 @@ class MainActivity : AppCompatActivity(), OnClick {
 
     private fun initDataSearch() {
         lifecycleScope.launch {
-            viewModel.staffSearch.observe(this@MainActivity) {
+            viewModel.staffSearch.collect {
                 staffAdapter.setData(it)
             }
         }
@@ -133,8 +137,9 @@ class MainActivity : AppCompatActivity(), OnClick {
 
     private fun initData() {
         lifecycleScope.launch {
-            viewModel.listStaff.observe(this@MainActivity)  {
+            viewModel.listStaff.collect {
                 staffAdapter.setData(it)
+                Log.e("Size", it.size.toString())
             }
         }
     }

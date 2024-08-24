@@ -1,6 +1,7 @@
 package com.example.ghtk_reactive_programming
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -32,8 +33,10 @@ class StaffAdapter(private var listStaff : MutableList<Staff>, private val onCli
 
     @SuppressLint("NotifyDataSetChanged")
     fun setData(newData : MutableList<Staff>) {
+        Log.e("Size1", listStaff.size.toString())
         listStaff.clear()
         listStaff.addAll(newData)
+        Log.e("Size2", listStaff.size.toString())
         notifyDataSetChanged()
     }
 
